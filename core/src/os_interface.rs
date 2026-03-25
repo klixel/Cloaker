@@ -1,4 +1,3 @@
-use sodiumoxide;
 use std::error::Error;
 use std::fs::{remove_file, File};
 use std::io::prelude::*;
@@ -64,7 +63,7 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
                 Ok(()) => (),
                 Err(e) => {
                     if let Some(out_file) = &c.out_file {
-                        remove_file(&out_file).map_err(|e2| {
+                        remove_file(out_file).map_err(|e2| {
                             format!("{}. Could not delete output file: {}.", e, e2)
                         })?;
                     }
@@ -83,7 +82,7 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
                         Ok(()) => (),
                         Err(e) => {
                             if let Some(out_file) = &c.out_file {
-                                remove_file(&out_file).map_err(|e2| {
+                                remove_file(out_file).map_err(|e2| {
                                     format!("{}. Could not delete output file: {}.", e, e2)
                                 })?;
                             }
@@ -108,7 +107,7 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
                         Ok(()) => (),
                         Err(e) => {
                             if let Some(out_file) = &c.out_file {
-                                remove_file(&out_file).map_err(|e2| {
+                                remove_file(out_file).map_err(|e2| {
                                     format!("{}. Could not delete output file: {}.", e, e2)
                                 })?;
                             }

@@ -3,7 +3,6 @@ mod brute_force; // test
 use cloaker::*;
 
 use clap::{App, Arg, ArgGroup};
-use rpassword;
 use std::env;
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -157,7 +156,7 @@ fn do_it() -> Result<(Option<String>, Mode), Box<dyn Error>> {
             .to_string();
         let p = Path::new(&pw_file);
         std::fs::read_to_string(p)
-            .map_err(|e| format!("could not read password file: {}", e.to_string()))?
+            .map_err(|e| format!("could not read password file: {}", e))?
     } else {
         get_password(&mode)
     };
@@ -243,7 +242,7 @@ fn generate_default_filename(
             with_ext
         }
         Mode::Decrypt => {
-            let name = if let Some(n) = name { n } else { "stdin" };
+            let name = name.unwrap_or("stdin");
             if name.ends_with(FILE_EXTENSION) {
                 name[..name.len() - FILE_EXTENSION.len()].to_string()
             } else {

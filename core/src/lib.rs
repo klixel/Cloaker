@@ -91,8 +91,8 @@ pub fn decrypt<I: Read, O: Write>(
 ) -> Result<(), Box<dyn error::Error>> {
     // make sure file is at least prefix + salt + header
     if let Some(size) = filesize {
-        if !(size >= argon2id13::SALTBYTES + HEADERBYTES + SIGNATURE.len()) {
-            return Err(CoreError::new("File not big enough to have been encrypted"))?;
+        if (size < argon2id13::SALTBYTES + HEADERBYTES + SIGNATURE.len()) {
+            Err(CoreError::new("File not big enough to have been encrypted"))?;
         }
     }
     let mut total_bytes_read = 0;
