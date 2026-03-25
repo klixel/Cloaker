@@ -63,7 +63,7 @@ Outcome passwordPrompts(Mode mode, QString* password) {
         if (!okConfirm) {
             return cancel;
         }
-        if (password != passwordConfirm) {
+        if (*password != passwordConfirm) {
             QMessageBox redoBox;
             redoBox.setInformativeText("Would you like to re-enter?");
             redoBox.setText("Passwords do not match.");
