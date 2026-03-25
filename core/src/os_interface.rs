@@ -59,7 +59,13 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
     let mut output = file_or_stdout(out_file);
     match c.mode {
         Mode::Encrypt => {
-            match crate::encrypt(&mut input, &mut output, &c.password, &c.ui, filesize) {
+            match crate::encrypt(
+                &mut input,
+                &mut output,
+                &c.password,
+                c.ui.as_ref(),
+                filesize,
+            ) {
                 Ok(()) => (),
                 Err(e) => {
                     if let Some(out_file) = &c.out_file {
@@ -78,7 +84,13 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
             input.read_exact(&mut first_four)?;
             match first_four {
                 crate::SIGNATURE => {
-                    match crate::decrypt(&mut input, &mut output, &c.password, &c.ui, filesize) {
+                    match crate::decrypt(
+                        &mut input,
+                        &mut output,
+                        &c.password,
+                        c.ui.as_ref(),
+                        filesize,
+                    ) {
                         Ok(()) => (),
                         Err(e) => {
                             if let Some(out_file) = &c.out_file {
@@ -100,7 +112,7 @@ pub fn main_routine(c: &Config) -> Result<(), Box<dyn Error>> {
                         &mut input,
                         &mut output,
                         &c.password,
-                        &c.ui,
+                        c.ui.as_ref(),
                         filesize,
                         first_four,
                     ) {

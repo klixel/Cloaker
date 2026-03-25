@@ -33,13 +33,13 @@ pub fn decrypt<I: Read, O: Write>(
     input: &mut I,
     output: &mut O,
     password: &str,
-    ui: &Box<dyn Ui>,
+    ui: &dyn Ui,
     filesize: Option<usize>,
     first_four: Option<[u8; 4]>,
 ) -> Result<(), Box<dyn error::Error>> {
     // make sure file is at least prefix + salt + header
     if let Some(size) = filesize {
-        if (size < pwhash::SALTBYTES + HEADERBYTES + SIGNATURE.len()) {
+        if size < pwhash::SALTBYTES + HEADERBYTES + SIGNATURE.len() {
             Err(CoreError::new("File not big enough to have been encrypted"))?;
         }
     }
@@ -92,14 +92,11 @@ pub fn decrypt<I: Read, O: Write>(
 }
 
 // returns Ok(true, bytes_read) if EOF, and Ok(false, bytes_read) if buffer was filled without EOF
-fn maybe_fill_buffer<T: Read>(
-    reader: &mut T,
-    buffer: &mut Vec<u8>,
-) -> std::io::Result<(bool, usize)> {
+fn maybe_fill_buffer<T: Read>(reader: &mut T, buffer: &mut [u8]) -> std::io::Result<(bool, usize)> {
     let mut bytes_read = 0;
     while bytes_read < buffer.len() {
         match reader.read(&mut buffer[bytes_read..]) {
-            Ok(x) if x == 0 => return Ok((true, bytes_read)), // EOF
+            Ok(0) => return Ok((true, bytes_read)), // EOF
             Ok(x) => bytes_read += x,
             Err(e) => return Err(e),
         };

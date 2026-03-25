@@ -155,8 +155,7 @@ fn do_it() -> Result<(Option<String>, Mode), Box<dyn Error>> {
             .ok_or("could not get value of password file")?
             .to_string();
         let p = Path::new(&pw_file);
-        std::fs::read_to_string(p)
-            .map_err(|e| format!("could not read password file: {}", e))?
+        std::fs::read_to_string(p).map_err(|e| format!("could not read password file: {}", e))?
     } else {
         get_password(&mode)
     };
@@ -206,9 +205,9 @@ fn generate_output_path(
     input: Option<&str>,
     output: Option<&str>,
 ) -> Result<PathBuf, String> {
-    if output.is_some() {
+    if let Some(path) = output {
         // if output flag was specified,
-        let p = PathBuf::from(output.unwrap());
+        let p = PathBuf::from(path);
         if p.exists() && p.is_dir() {
             // and it's a directory,
             generate_default_filename(mode, p, input) // give it a default filename.
@@ -243,8 +242,8 @@ fn generate_default_filename(
         }
         Mode::Decrypt => {
             let name = name.unwrap_or("stdin");
-            if name.ends_with(FILE_EXTENSION) {
-                name[..name.len() - FILE_EXTENSION.len()].to_string()
+            if let Some(stripped) = name.strip_suffix(FILE_EXTENSION) {
+                stripped.to_string()
             } else {
                 prepend("decrypted_", name)
                     .ok_or(format!("could not prepend decrypted_ to filename {}", name))?

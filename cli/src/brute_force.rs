@@ -75,9 +75,7 @@ mod tests {
             assert!(cloaker::main_routine(&c).is_err());
 
             attempts += 1;
-            let elapsed = Instant::now()
-                .duration_since(start_time.clone())
-                .as_secs_f64();
+            let elapsed = Instant::now().duration_since(start_time).as_secs_f64();
             if elapsed == 0. {
                 continue;
             };
@@ -90,6 +88,5 @@ mod tests {
                 println!("at {:.3} attempts per second, it would take {:.2} years to test all 12-character passwords including lower-/uppercase letters, numbers, and symbols.", attempts_per_sec, num_years);
             }
         }
-        Ok(())
     }
 }
